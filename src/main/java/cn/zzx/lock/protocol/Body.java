@@ -1,7 +1,6 @@
 package cn.zzx.lock.protocol;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 /**
  * @author fzh
