@@ -40,13 +40,13 @@ public class PortListener implements Runnable {
             server.bind(new InetSocketAddress(port), maxConnections);
             selector = SelectorProvider.provider().openSelector();
             server.register(selector, SelectionKey.OP_ACCEPT);
-            logger.info("PortListener has completed initialization.");
             status = READY;
             listener = new Thread(this, "PortListener");
             listener.setUncaughtExceptionHandler((t, e) -> {
                 logger.error("Uncaught Exception happened in PortListener", e);
                 status = DESTROYED;
             });
+            logger.info("PortListener has completed initialization.");
         } catch (IOException e) {
             logger.error("PortListener has not completed initialization. Because of: " + e.getMessage());
             e.printStackTrace();
@@ -78,39 +78,38 @@ public class PortListener implements Runnable {
         status = RUNNING;
         while (!stop) {
             try {
-                selector.select(1000);
+                selector.select();
                 Iterator<SelectionKey> iter = selector.selectedKeys().iterator();
+                SelectionKey sk;
                 while (iter.hasNext()) {
-                    SelectionKey sk = iter.next();
+                    sk = iter.next();
                     iter.remove();
                     if (sk.isValid()) {
                         if (sk.isAcceptable()) {
                             doAccept(sk);
                         }
                         if (sk.isReadable()) {
-                            // delegate to thread pool to execute
-                            pool.execute(new Task((SocketChannel) sk.channel()));
+                            doRead(sk);
                         }
                     }
-
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        logger.info("PortListener stop to listen.");
         if (selector != null) {
             try {
                 selector.close();
                 status = DESTROYED;
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 logger.error("In PortListener: exception happened while selector closed.");
                 e.printStackTrace();
             }
         }
     }
 
-    private void doAccept(SelectionKey sk){
+    private void doAccept(SelectionKey sk) {
         ServerSocketChannel ssc = (ServerSocketChannel) sk.channel();
         SocketChannel sc;
         try {
@@ -122,6 +121,13 @@ public class PortListener implements Runnable {
             sk.cancel();
             e.printStackTrace();
         }
+    }
+
+    private void doRead(SelectionKey sk) {
+        // cancel next read event
+        sk.cancel();
+        // delegate to thread pool to execute
+        pool.execute(new Task(sk));
     }
 
     public Integer getMaxConnections() {

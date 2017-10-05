@@ -6,14 +6,15 @@ import java.io.Serializable;
  * @author fzh
  * @since 2017/10/4
  */
-public final class Packet implements Serializable {
+public final class RequestPacket implements Serializable {
     private static final long serialVersionUID = 1315779758371011560L;
+    public static final int MAXSIZE = 82;
     private Header header;
     private Body body;
     private byte[] source;
     private boolean valid;
 
-    public Packet(byte[] source) {
+    public RequestPacket(byte[] source) {
         this.source = source;
         header = new Header(source);
         body = new Body(header, new String(source, 6, source.length - 6));
@@ -34,7 +35,7 @@ public final class Packet implements Serializable {
 
     @Override
     public String toString() {
-        return "Packet{" +
+        return "RequestPacket{" +
                 "header=" + header +
                 ", body=" + body +
                 '}';

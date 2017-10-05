@@ -41,7 +41,7 @@
     <bean id="threadPool" class="cn.zzx.lock.module.ThreadPool"/>
 
     <bean id="portListener" class="cn.zzx.lock.module.PortListener" init-method="init" destroy-method="stop">
-        <property name="port" value="2017"/>
+        <property name="port" value="8080"/>
         <!--if maxConnections == 0, listener will blocking before accept request.-->
         <property name="maxConnections" value="5000"/>
     </bean>

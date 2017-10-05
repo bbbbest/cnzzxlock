@@ -24,7 +24,7 @@ public class ThreadPool {
 
     public ThreadPool() {
         coreSize = 5;
-        maxSize = 20;
+        maxSize = 10;
         waitTime = 60;
         waitTimeUnit = TimeUnit.SECONDS;
         groupName = "WorkerGroup";
@@ -117,17 +117,18 @@ public class ThreadPool {
     }
 
     private class DefaultThreadFactory implements ThreadFactory {
-        private String threadPrefix = "Worker-";
+        private String threadPrefix;
         private AtomicInteger threadId;
         private ThreadGroup group;
 
         DefaultThreadFactory(ThreadGroup group, String threadPrefix) {
             this.group = group;
             this.threadPrefix = threadPrefix;
+            this.threadId = new AtomicInteger(0);
         }
 
         DefaultThreadFactory(ThreadGroup group) {
-            this.group = group;
+            this(group, "Worker-");
         }
 
         @Override

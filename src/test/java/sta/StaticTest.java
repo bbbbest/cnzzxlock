@@ -52,4 +52,10 @@ public class StaticTest {
             System.out.println(msg.substring(end, (end += 4)));
         }
     }
+
+    @Test
+    public void testNumber() throws Exception {
+        double x = 123.666666;
+        System.out.println(x);
+    }
 }
