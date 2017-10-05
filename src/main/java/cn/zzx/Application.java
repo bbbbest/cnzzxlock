@@ -1,11 +1,10 @@
 package cn.zzx;
 
-import cn.zzx.lock.db.dao.UserDao;
-import cn.zzx.lock.db.dao.impl.UserDaoImpl;
 import cn.zzx.lock.module.PortListener;
 import cn.zzx.lock.module.ThreadPool;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -14,14 +13,15 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public final class Application {
     // Spring Context
+    private static final Logger logger = LogManager.getLogger(Application.class);
     private static ApplicationContext context;
     private static PortListener portListener;
     private static ThreadPool threadPool;
     public static void main(String[] args) {
         context = new ClassPathXmlApplicationContext("applicationContext.xml");
-//        portListener = (PortListener) context.getBean("portListener");
-//        threadPool = (ThreadPool) context.getBean("threadPool");
-        UserDao userDao = (UserDao) context.getBean("userDao");
-        userDao.print();
+        portListener = (PortListener) context.getBean("portListener");
+        threadPool = (ThreadPool) context.getBean("threadPool");
+        portListener.start();
+        logger.info("Server started.");
     }
 }

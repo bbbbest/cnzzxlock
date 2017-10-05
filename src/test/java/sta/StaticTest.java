@@ -34,4 +34,22 @@ public class StaticTest {
         System.out.println(" after interrupt isInterrupted:" + thread.isInterrupted());
 
     }
+
+    @Test
+    public void byteTest() throws Exception {
+        Byte status = 1;
+        System.out.println(status << 0);
+        System.out.println(status << 1);
+        System.out.println(status << 2);
+        System.out.println(status << 3);
+    }
+
+    @Test
+    public void nestedClass() throws Exception {
+        String msg = "qwerqwfrqwgrqwhr";
+        int end = 0;
+        for (int i = 0; i < 4; i++) {
+            System.out.println(msg.substring(end, (end += 4)));
+        }
+    }
 }
