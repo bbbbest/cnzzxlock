@@ -10,14 +10,14 @@ import cn.zzx.lock.db.po.CyclingRecord;
  */
 public interface CyclingRecordDao {
     /**
-     * 根据用户编号和锁编号找到一条未完成的骑行记录，判断依据：结束时间是否为开始时间的前 1 min
+     * 根据用户编号和自行车编号找到一条未完成的骑行记录，判断依据：结束时间是否为开始时间的前 1 min
      *
      * @param userId the user id
-     * @param lockId the lock id
+     * @param bicycleId the bicycle id
      * @return the cycling record
      * @throws Exception the exception
      */
-    CyclingRecord findUnFinishedByUserIdAndLockId(int userId, int lockId) throws Exception;
+    CyclingRecord findUnFinishedByUserIdAndBicycleId(int userId, int bicycleId) throws Exception;
 
     /**
      * 保存骑行记录，设置：结束时间为开始时间前 1 min

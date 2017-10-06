@@ -108,4 +108,10 @@ public class Bicycle {
     public boolean equals(Object obj) {
         return obj instanceof Bicycle && ((Bicycle) obj).bicycleId == this.bicycleId;
     }
+
+    /**
+     * 判断该自行车是否可用，判断标准为：该自行车为未损坏状态并且电量大于 5%
+     * @return 可用状态
+     */
+    public boolean available(){return status == 1 && energy > 5;}
 }

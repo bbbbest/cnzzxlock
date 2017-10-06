@@ -11,8 +11,9 @@ import org.springframework.stereotype.Repository;
  */
 @Repository("cyclingRecordDao")
 public class CyclingRecordDaoImpl extends BaseDao implements CyclingRecordDao {
+
     @Override
-    public CyclingRecord findUnFinishedByUserIdAndLockId(int userId, int lockId) throws Exception {
+    public CyclingRecord findUnFinishedByUserIdAndBicycleId(int userId, int bicycleId) throws Exception {
         return null;
     }
 

@@ -106,4 +106,10 @@ public class User {
     public boolean equals(Object obj) {
         return obj instanceof User && ((User) obj).userId == this.userId;
     }
+
+    /**
+     * 判断该用户是否可以骑行，判断标准为：该用户为正常状态且余额大于0
+     * @return 该用户是否可骑行
+     */
+    public boolean available(){return status == 1 && balance > 0;}
 }
