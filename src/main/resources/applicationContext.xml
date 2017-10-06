@@ -38,7 +38,10 @@
         <property name="filters" value="stat"/>
     </bean>
 
-    <bean id="threadPool" class="cn.zzx.lock.module.ThreadPool"/>
+    <bean id="threadPool" class="cn.zzx.lock.module.ThreadPool" init-method="init" destroy-method="shutdown">
+        <property name="coreSize" value="5"/>
+        <property name="maxSize" value="10"/>
+    </bean>
 
     <bean id="portListener" class="cn.zzx.lock.module.PortListener" init-method="init" destroy-method="stop">
         <property name="port" value="8080"/>

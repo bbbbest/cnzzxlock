@@ -17,20 +17,21 @@ public class ThreadPool {
     private int maxSize;
     private int waitTime;
     private TimeUnit waitTimeUnit;
-    protected ThreadGroup threadGroup;
-    protected String groupName;
-    protected ThreadFactory threadFactory;
-    protected BlockingQueue<Runnable> blockingQueue;
+    private ThreadGroup threadGroup;
+    private ThreadFactory threadFactory;
 
     public ThreadPool() {
         coreSize = 5;
         maxSize = 10;
         waitTime = 60;
+    }
+
+    private void init() {
         waitTimeUnit = TimeUnit.SECONDS;
-        groupName = "WorkerGroup";
+        String groupName = "WorkerGroup";
         threadGroup = new ThreadGroup(groupName);
         threadFactory = new DefaultThreadFactory(threadGroup);
-        blockingQueue = new LinkedBlockingQueue<>();
+        BlockingQueue<Runnable> blockingQueue = new LinkedBlockingQueue<>();
         realExecutor = new ThreadPoolExecutor(coreSize, maxSize, waitTime, waitTimeUnit, blockingQueue, threadFactory);
         logger.info("ThreadPool has completed initialization.");
     }
@@ -60,6 +61,7 @@ public class ThreadPool {
 
     protected void afterSubmit() throws Exception {
     }
+
     public <T> Future<T> submit(Callable<T> task) {
         Future<T> future = null;
         try {
@@ -78,6 +80,7 @@ public class ThreadPool {
 
     public void shutdown() {
         realExecutor.shutdown();
+        logger.info("ThreadPool has been shutdown.");
     }
 
     public int getCoreSize() {
@@ -86,7 +89,7 @@ public class ThreadPool {
 
     public void setCoreSize(int coreSize) {
         this.coreSize = coreSize;
-        realExecutor.setCorePoolSize(coreSize);
+        if (realExecutor != null) realExecutor.setCorePoolSize(coreSize);
     }
 
     public int getMaxSize() {
@@ -95,7 +98,7 @@ public class ThreadPool {
 
     public void setMaxSize(int maxSize) {
         this.maxSize = maxSize;
-        realExecutor.setMaximumPoolSize(maxSize);
+        if (realExecutor != null) realExecutor.setMaximumPoolSize(maxSize);
     }
 
     public void setWaitTime(int waitTime, TimeUnit waitTimeUnit) {
@@ -108,12 +111,20 @@ public class ThreadPool {
         return realExecutor.getPoolSize();
     }
 
-    public boolean isShutdown(){
+    public boolean isShutdown() {
         return realExecutor.isTerminated();
     }
 
-    public int getActiveCount(){
+    public int getActiveCount() {
         return realExecutor.getActiveCount();
+    }
+
+    public ThreadGroup getThreadGroup() {
+        return threadGroup;
+    }
+
+    public ThreadFactory getThreadFactory() {
+        return threadFactory;
     }
 
     private class DefaultThreadFactory implements ThreadFactory {

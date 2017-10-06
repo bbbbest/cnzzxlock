@@ -7,7 +7,7 @@ import java.util.Date;
  * @since 2017/10/3
  */
 public class CyclingRecord {
-    private int cyclingRecordId;
+    private String cyclingRecordId;
     private int bicycleId;
     private int userId;
     private Date startTime;
@@ -17,11 +17,11 @@ public class CyclingRecord {
     private double endLocX;
     private double endLocY;
 
-    public int getCyclingRecordId() {
+    public String getCyclingRecordId() {
         return cyclingRecordId;
     }
 
-    public void setCyclingRecordId(int cyclingRecordId) {
+    public void setCyclingRecordId(String cyclingRecordId) {
         this.cyclingRecordId = cyclingRecordId;
     }
 

@@ -7,7 +7,7 @@ import java.util.Date;
  * @since 2017/10/3
  */
 public class DealRecord {
-    private int dealRecordId;
+    private String dealRecordId;
     private int userId;
     private byte actionType;
     private double money;
@@ -21,11 +21,11 @@ public class DealRecord {
         this.actionTime = actionTime;
     }
 
-    public int getDealRecordId() {
+    public String getDealRecordId() {
         return dealRecordId;
     }
 
-    public void setDealRecordId(int dealRecordId) {
+    public void setDealRecordId(String dealRecordId) {
         this.dealRecordId = dealRecordId;
     }
 

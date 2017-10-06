@@ -1,6 +1,9 @@
 package sta;
 
+import cn.zzx.lock.protocol.ActionType;
 import org.junit.Test;
+
+import java.util.Date;
 
 /**
  * @author fzh
@@ -57,5 +60,17 @@ public class StaticTest {
     public void testNumber() throws Exception {
         double x = 123.666666;
         System.out.println(x);
+    }
+
+    @Test
+    public void actionType() throws Exception {
+        ActionType actionType = ActionType.LOCK;
+        System.out.println(actionType);
+        System.out.println(actionType.ordinal());
+        System.out.println(actionType.getValue());
+        Date now = new Date();
+        Thread.sleep(1000);
+        Date after = new Date();
+        System.out.println(after.compareTo(now));
     }
 }
