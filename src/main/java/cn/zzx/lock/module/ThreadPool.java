@@ -35,47 +35,11 @@ public class ThreadPool {
         realExecutor = new ThreadPoolExecutor(coreSize, maxSize, waitTime, waitTimeUnit, blockingQueue, threadFactory);
         logger.info("ThreadPool has completed initialization.");
     }
-
-    protected void preExecute() throws Exception {
-    }
-
-    protected void afterExecute() throws Exception {
-    }
-
     public void execute(Task task) {
-        try {
-            preExecute();
-        } catch (Exception e) {
-            logger.error("Error on preExecute task.", e);
-        }
         realExecutor.execute(task);
-        try {
-            afterExecute();
-        } catch (Exception e) {
-            logger.error("Error on afterExecute task.", e);
-        }
     }
-
-    protected void preSubmit() throws Exception {
-    }
-
-    protected void afterSubmit() throws Exception {
-    }
-
     public <T> Future<T> submit(Callable<T> task) {
-        Future<T> future = null;
-        try {
-            preSubmit();
-        } catch (Exception e) {
-            logger.error("Error on preSubmit task.", e);
-        }
-        future = realExecutor.submit(task);
-        try {
-            afterSubmit();
-        } catch (Exception e) {
-            logger.error("Error on afterSubmit task.", e);
-        }
-        return future;
+        return realExecutor.submit(task);
     }
 
     public void shutdown() {

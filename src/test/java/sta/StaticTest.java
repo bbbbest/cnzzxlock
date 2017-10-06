@@ -1,6 +1,6 @@
 package sta;
 
-import cn.zzx.lock.protocol.ActionType;
+import cn.zzx.lock.protocol.OperateType;
 import org.junit.Test;
 
 import java.util.Date;
@@ -41,7 +41,7 @@ public class StaticTest {
     @Test
     public void byteTest() throws Exception {
         Byte status = 1;
-        System.out.println(status << 0);
+        System.out.println(status);
         System.out.println(status << 1);
         System.out.println(status << 2);
         System.out.println(status << 3);
@@ -64,13 +64,22 @@ public class StaticTest {
 
     @Test
     public void actionType() throws Exception {
-        ActionType actionType = ActionType.LOCK;
-        System.out.println(actionType);
-        System.out.println(actionType.ordinal());
-        System.out.println(actionType.getValue());
+        OperateType operateType = OperateType.LOCK;
+        System.out.println(operateType);
+        System.out.println(operateType.ordinal());
+        System.out.println(operateType.getValue());
         Date now = new Date();
         Thread.sleep(1000);
         Date after = new Date();
         System.out.println(after.compareTo(now));
+    }
+
+    @Test
+    public void number() throws Exception {
+        String cardNum = "0000001212345678";
+        Integer cn = Integer.valueOf(cardNum);
+        System.out.println(cn);
+        System.out.println(Integer.MAX_VALUE);
+        System.out.println(Long.MAX_VALUE);
     }
 }

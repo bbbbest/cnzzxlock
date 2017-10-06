@@ -1,9 +1,10 @@
 package cn.zzx.lock.module;
 
+import cn.zzx.lock.service.CycleService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
@@ -30,8 +31,11 @@ public class PortListener implements Runnable {
     private ServerSocketChannel server;
     private Selector selector;
 
-    @Autowired
+    @Resource(name = "threadPool")
     private ThreadPool pool;
+
+    @Resource(name = "cycleService")
+    private CycleService service;
 
     private void init() {
         try {
@@ -101,6 +105,7 @@ public class PortListener implements Runnable {
         if (selector != null) {
             try {
                 selector.close();
+                server.close();
                 status = DESTROYED;
             } catch (IOException e) {
                 logger.error("In PortListener: exception happened while selector closed.");
@@ -127,7 +132,7 @@ public class PortListener implements Runnable {
         // cancel next read event
         sk.cancel();
         // delegate to thread pool to execute
-        pool.execute(new Task(sk));
+        pool.execute(new Task(sk, service));
     }
 
     public Integer getMaxConnections() {

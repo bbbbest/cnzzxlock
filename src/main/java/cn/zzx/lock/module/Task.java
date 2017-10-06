@@ -1,6 +1,8 @@
 package cn.zzx.lock.module;
 
+import cn.zzx.lock.protocol.OperateType;
 import cn.zzx.lock.protocol.RequestPacket;
+import cn.zzx.lock.service.CycleService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,9 +18,11 @@ import java.nio.channels.SocketChannel;
 public class Task implements Runnable {
     private static Logger logger = LogManager.getLogger(Task.class);
     private SelectionKey sk;
+    private CycleService service;
 
-    public Task(SelectionKey sk) {
+    Task(SelectionKey sk, CycleService service) {
         this.sk = sk;
+        this.service = service;
     }
 
     @Override
@@ -35,13 +39,44 @@ public class Task implements Runnable {
                 buf.flip();
                 byte[] data = new byte[buf.remaining()];
                 buf.get(data);
-
                 // create packet
-
-                // do some query and get result
-
-                // write reply data
-
+                RequestPacket packet = new RequestPacket(data);
+                if (packet.isValid()) {
+                    RequestPacket.Body body = packet.getBody();
+                    byte op = Byte.parseByte(body.getOperationType());
+                    if (op == OperateType.LOCK.getValue()) {
+                        // ask to lock
+                        Integer card = Integer.valueOf(body.getCardNum());
+                        Integer lockId = Integer.valueOf(body.getLockId());
+                        Double locX = Double.valueOf(body.getLocX());
+                        Double locY = Double.valueOf(body.getLocY());
+                        Float energy = Float.valueOf(body.getEnergy());
+                        try {
+                            if (service.lock(card,lockId,locX,locY, energy)) {
+                                respond(sc, OperateType.LOCK);
+                            } else {
+                                respond(sc, OperateType.UNLOCK);
+                            }
+                        } catch (Exception e) {
+                            respond(sc, OperateType.UNLOCK);
+                        }
+                    } else {
+                        // ask to unlock
+                        Integer card = Integer.valueOf(body.getCardNum());
+                        Integer lockId = Integer.valueOf(body.getLockId());
+                        try {
+                            if (service.unlock(card, lockId)) {
+                                respond(sc, OperateType.UNLOCK);
+                            } else {
+                                respond(sc, OperateType.LOCK);
+                            }
+                        } catch (Exception e) {
+                            respond(sc, OperateType.LOCK);
+                        }
+                    }
+                } else {
+                    respond(sc, OperateType.LOCK);
+                }
             }
             sc.close();
         } catch (IOException e) {
@@ -50,5 +85,7 @@ public class Task implements Runnable {
         }
     }
 
-    public boolean valid(){return true;}
+    private void respond(SocketChannel channel, OperateType op) throws IOException {
+        channel.write(ByteBuffer.wrap(new byte[]{op.getValue()}));
+    }
 }

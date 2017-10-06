@@ -4,11 +4,11 @@ package cn.zzx.lock.protocol;
  * @author fzh
  * @since 2017/10/6
  */
-public enum ActionType {
+public enum OperateType {
     LOCK((byte) 'f'), UNLOCK((byte) 'o');
     private byte value;
 
-    ActionType(byte value) {
+    OperateType(byte value) {
         this.value = value;
     }
 

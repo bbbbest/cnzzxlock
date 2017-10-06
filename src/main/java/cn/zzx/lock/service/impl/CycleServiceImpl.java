@@ -12,6 +12,7 @@ import cn.zzx.lock.service.CycleService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * @author fzh
@@ -33,22 +34,54 @@ public class CycleServiceImpl implements CycleService {
     private UserDao userDao;
 
     @Override
-    public User findByCardNum(int card) throws Exception {
-        return null;
+    public boolean lock(int cardNum, int lockId, double locX, double locY, float energy) throws Exception {
+        Date now = new Date(System.currentTimeMillis());
+        User user = userDao.findByCardNum(cardNum);
+        Bicycle bicycle = bicycleDao.findByLockId(lockId);
+        CyclingRecord cyclingRecord = cyclingRecordDao.findUnFinishedByUserIdAndBicycleId(user.getUserId(), bicycle.getBicycleId());
+        {
+            bicycle.setLocationX(locX);
+            bicycle.setLocationY(locY);
+            bicycle.setEnergy(energy);
+            if (energy < 5) bicycle.setStatus((byte) 0);
+            bicycleDao.updateLocationAndEnergyByLockId(bicycle);
+        }
+        {
+            cyclingRecord.setEndLocX(locX);
+            cyclingRecord.setEndLocY(locY);
+            cyclingRecord.setEndTime(now);
+            cyclingRecordDao.update(cyclingRecord);
+        }
+        {
+            float tariff = 1;   // per hour
+            float hours = now.compareTo(cyclingRecord.getStartTime()) / 3600;
+            double cost = tariff * hours;
+            DealRecord dealRecord = new DealRecord();
+            dealRecord.setActionTime(now);
+            dealRecord.setActionType((byte) 0);
+            dealRecord.setMoney(cost);
+            dealRecordDao.save(dealRecord);
+            user.setBalance(user.getBalance() - cost);
+            userDao.update(user);
+        }
+        return true;
     }
 
     @Override
-    public Bicycle findByLockId(int lockId) throws Exception {
-        return null;
-    }
-
-    @Override
-    public boolean saveCyclingRecord(CyclingRecord record) throws Exception {
-        return false;
-    }
-
-    @Override
-    public boolean saveDealRecord(DealRecord record) throws Exception {
-        return false;
+    public boolean unlock(int cardNum, int lockId) throws Exception {
+        User user = userDao.findByCardNum(cardNum);
+        if (!user.available()) return false;
+        Bicycle bicycle = bicycleDao.findByLockId(lockId);
+        if (!bicycle.available()) return false;
+        {
+            CyclingRecord cyclingRecord = new CyclingRecord();
+            cyclingRecord.setUserId(user.getUserId());
+            cyclingRecord.setBicycleId(bicycle.getBicycleId());
+            cyclingRecord.setStartTime(new Date());
+            cyclingRecord.setStartLocX(bicycle.getLocationX());
+            cyclingRecord.setStartLocY(bicycle.getLocationY());
+            cyclingRecordDao.save(cyclingRecord);
+        }
+        return true;
     }
 }
