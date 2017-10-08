@@ -1,7 +1,6 @@
 package cn.zzx.lock.module;
 
-import cn.zzx.lock.protocol.OperateType;
-import cn.zzx.lock.protocol.RequestPacket;
+import cn.zzx.lock.protocol.*;
 import cn.zzx.lock.service.CycleService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,8 +29,8 @@ public class Task implements Runnable {
         try {
             SocketChannel sc = (SocketChannel) sk.channel();
 
-            // whole packet will less than or equal to 82 bytes.
-            ByteBuffer buf = ByteBuffer.allocate(RequestPacket.MAXSIZE);
+            // whole packet will less than or equal to response packet's valid size.
+            ByteBuffer buf = ByteBuffer.allocate(LockPacket.RESPONSE_VALID_SIZE);
 
             // valid connection
             if (sc.read(buf) > 0) {
@@ -39,53 +38,66 @@ public class Task implements Runnable {
                 buf.flip();
                 byte[] data = new byte[buf.remaining()];
                 buf.get(data);
+
                 // create packet
-                RequestPacket packet = new RequestPacket(data);
-                if (packet.isValid()) {
-                    RequestPacket.Body body = packet.getBody();
-                    byte op = Byte.parseByte(body.getOperationType());
-                    if (op == OperateType.LOCK.getValue()) {
-                        // ask to lock
-                        Integer card = Integer.valueOf(body.getCardNum());
-                        Integer lockId = Integer.valueOf(body.getLockId());
-                        Double locX = Double.valueOf(body.getLocX());
-                        Double locY = Double.valueOf(body.getLocY());
-                        Float energy = Float.valueOf(body.getEnergy());
-                        try {
-                            if (service.lock(card,lockId,locX,locY, energy)) {
-                                respond(sc, OperateType.LOCK);
-                            } else {
-                                respond(sc, OperateType.UNLOCK);
-                            }
-                        } catch (Exception e) {
-                            respond(sc, OperateType.UNLOCK);
+                try {
+                    Packet packet = Packet.of(data);
+                    // recheck packet's validity
+                    if (packet.isValid()) {
+                        if (packet instanceof LockPacket) {
+                            handleLock(sc, (LockPacket) packet);
+                        } else {
+                            handleUnlock(sc, (UnlockPacket) packet);
                         }
                     } else {
-                        // ask to unlock
-                        Integer card = Integer.valueOf(body.getCardNum());
-                        Integer lockId = Integer.valueOf(body.getLockId());
-                        try {
-                            if (service.unlock(card, lockId)) {
-                                respond(sc, OperateType.UNLOCK);
-                            } else {
-                                respond(sc, OperateType.LOCK);
-                            }
-                        } catch (Exception e) {
-                            respond(sc, OperateType.LOCK);
-                        }
+                        respond(sc, Response.CLOSE);
                     }
-                } else {
-                    respond(sc, OperateType.LOCK);
+                } catch (UnresolvedPacketException e) {
+                    respond(sc, Response.CLOSE);
+                    logger.error(e.getMessage());
                 }
             }
             sc.close();
         } catch (IOException e) {
             logger.error("Exception happened while execute real work.");
-            e.printStackTrace();
         }
     }
 
-    private void respond(SocketChannel channel, OperateType op) throws IOException {
-        channel.write(ByteBuffer.wrap(new byte[]{op.getValue()}));
+    /**
+     * 处理上锁的业务逻辑
+     * @param sc socket
+     * @param packet packet
+     * @throws IOException 写回信息出错
+     */
+    private void handleLock(SocketChannel sc, LockPacket packet) throws IOException {
+        try {
+            // try to lock in database
+            service.lock(packet.getCardNum(), packet.getLockId(), packet.getLatitude(), packet.getLongitude(), packet.getEnergy());
+            // success
+            respond(sc, Response.CLOSE);
+        } catch (Exception e) {
+            respond(sc, Response.OPEN);
+        }
+    }
+
+    /**
+     * 处理解锁的业务逻辑
+     * @param sc socket
+     * @param packet packet
+     * @throws IOException 写回信息出错
+     */
+    private void handleUnlock(SocketChannel sc, UnlockPacket packet) throws IOException {
+        try {
+            // try to unlock in database
+            service.unlock(packet.getCardNum(), packet.getLockId());
+            // success
+            respond(sc, Response.OPEN);
+        } catch (Exception e) {
+            respond(sc, Response.CLOSE);
+        }
+    }
+
+    private void respond(SocketChannel channel, Response op) throws IOException {
+        channel.write(ByteBuffer.wrap(op.getValue().getBytes()));
     }
 }

@@ -13,6 +13,8 @@ import org.springframework.stereotype.Repository;
 public class DealRecordDaoImpl extends BaseDao implements DealRecordDao {
     @Override
     public void save(DealRecord record) throws Exception {
-
+        String sql = "insert into dealrecord(dealRecordId, userId, actionType, money, actionTime) " +
+                "values(null,?,?,?,now())";
+        getJdbcTemplate().update(sql, record.getUserId(), record.getActionType(), record.getMoney());
     }
 }

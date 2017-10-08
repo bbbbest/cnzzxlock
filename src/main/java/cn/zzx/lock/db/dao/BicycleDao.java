@@ -16,7 +16,7 @@ public interface BicycleDao {
      * @return the bicycle
      * @throws Exception the exception
      */
-    Bicycle findByLockId(int lockId) throws Exception;
+    Bicycle findByLockId(long lockId) throws Exception;
 
     /**
      * 根据自行车信息，设置：自行车当前位置、电量信息

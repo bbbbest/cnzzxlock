@@ -16,7 +16,7 @@ public interface UserDao {
      * @return the user
      * @throws Exception the exception
      */
-    User findByCardNum(int card) throws Exception;
+    User findByCardNum(long card) throws Exception;
 
     /**
      * 更新用户余额

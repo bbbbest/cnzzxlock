@@ -82,4 +82,13 @@ public class StaticTest {
         System.out.println(Integer.MAX_VALUE);
         System.out.println(Long.MAX_VALUE);
     }
+
+    @Test
+    public void testOffsetString() throws Exception {
+        String str = "123456";
+        byte[] bytes = str.getBytes("UTF-8");
+        System.out.println(new String(bytes, 0,2));
+        System.out.println(new String(bytes, 2,2));
+        System.out.println(new String(bytes, 4,2));
+    }
 }

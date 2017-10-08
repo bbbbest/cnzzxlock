@@ -5,7 +5,7 @@ package cn.zzx.lock.protocol;
  * @since 2017/10/6
  */
 public enum OperateType {
-    LOCK((byte) 'f'), UNLOCK((byte) 'o');
+    LOCK((byte) 0x5D), UNLOCK((byte) 0x5B);
     private byte value;
 
     OperateType(byte value) {
@@ -14,5 +14,10 @@ public enum OperateType {
 
     public byte getValue() {
         return value;
+    }
+
+    static OperateType of(byte val) {
+        if (val != LOCK.value && val != UNLOCK.value) throw new RuntimeException("OperationType should valid.");
+        return val == LOCK.value ? LOCK : UNLOCK;
     }
 }
