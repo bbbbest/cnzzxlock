@@ -92,7 +92,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>cn.zzx.Application</mainClass>
+                            <mainClass>cn.zzx.SmartLockServer</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
