@@ -1,8 +1,7 @@
 package cn.zzx.lock.db.dao;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -13,7 +12,7 @@ import javax.sql.DataSource;
  * @since 2017/10/3
  */
 @Component("baseDao")
-public class BaseDao extends JdbcDaoSupport {
+public class BaseDao extends NamedParameterJdbcDaoSupport {
 
     @Resource(name = "dataSource", type = DataSource.class)
     public void setSuperDataSource(DataSource dataSource) {

@@ -15,14 +15,14 @@ import org.springframework.stereotype.Repository;
 public class BicycleDaoImpl extends BaseDao implements BicycleDao {
     @Override
     public Bicycle findByLockId(long lockId) throws Exception {
-        String sql = "select * from bicycle where id=?";
+        String sql = "SELECT * FROM bicycle WHERE lockId=?";
         RowMapper<Bicycle> rowMapper = new BeanPropertyRowMapper<>(Bicycle.class);
         return getJdbcTemplate().queryForObject(sql, rowMapper, lockId);
     }
 
     @Override
     public void updateLocationAndEnergyByLockId(Bicycle bicycle) throws Exception {
-        String sql = "update bicycle set locationX=?, locationY=?, energy=? where lockId=?";
-        getJdbcTemplate().update(sql, bicycle.getLocationX(), bicycle.getLocationY(), bicycle.getLockId());
+        String sql = "UPDATE bicycle SET locationX=?, locationY=?, energy=?, status=? WHERE lockId=?";
+        getJdbcTemplate().update(sql, bicycle.getLocationX(), bicycle.getLocationY(), bicycle.getEnergy(),bicycle.getStatus(), bicycle.getLockId());
     }
 }

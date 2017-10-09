@@ -89,9 +89,13 @@ public class Task implements Runnable {
     private void handleUnlock(SocketChannel sc, UnlockPacket packet) throws IOException {
         try {
             // try to unlock in database
-            service.unlock(packet.getCardNum(), packet.getLockId());
-            // success
-            respond(sc, Response.OPEN);
+            if (service.unlock(packet.getCardNum(), packet.getLockId())) {
+                // success
+                respond(sc, Response.OPEN);
+            } else {
+                // 一卡多用 或 一车多用
+                respond(sc, Response.CLOSE);
+            }
         } catch (Exception e) {
             respond(sc, Response.CLOSE);
         }

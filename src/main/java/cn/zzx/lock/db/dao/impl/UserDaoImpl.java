@@ -23,9 +23,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
 
     @Override
     public void update(User user) throws Exception {
-        String sql = "update user set userName=?, password=?, name=?, cardNumber=?, score=?, phone=?, stauts=?, " +
-                "balance=? where userId=?";
-        getJdbcTemplate().update(sql, user.getUsername(), user.getPassword(), user.getName(), user.getCardNumber(),
-                user.getScore(), user.getPhone(), user.getStatus(), user.getBalance(), user.getUserId());
+        String sql = "update user set score=?, balance=? where userId=?";
+        getJdbcTemplate().update(sql, user.getScore(), user.getBalance(), user.getUserId());
     }
 }

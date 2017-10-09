@@ -91,4 +91,19 @@ public class StaticTest {
         System.out.println(new String(bytes, 2,2));
         System.out.println(new String(bytes, 4,2));
     }
+
+    @Test
+    public void testRound() throws Exception {
+        float cost = 12654643.5031f;
+        System.out.println(Math.round(cost));
+    }
+
+    @Test
+    public void dateTest() throws Exception {
+        long x = 1080000 / 3600;
+        System.out.println(x);
+        float cost = (float) (x * 0.5);
+        System.out.println(cost);
+        System.out.println((float) 1/2);
+    }
 }

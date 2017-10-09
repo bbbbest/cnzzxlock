@@ -8,7 +8,9 @@ import cn.zzx.lock.db.po.Bicycle;
 import cn.zzx.lock.db.po.CyclingRecord;
 import cn.zzx.lock.db.po.DealRecord;
 import cn.zzx.lock.db.po.User;
+import cn.zzx.lock.protocol.ConstValue;
 import cn.zzx.lock.service.CycleService;
+import org.junit.Assert;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -38,7 +40,7 @@ public class CycleServiceImpl implements CycleService {
         Date now = new Date(System.currentTimeMillis());
         User user = userDao.findByCardNum(cardNum);
         Bicycle bicycle = bicycleDao.findByLockId(lockId);
-        CyclingRecord cyclingRecord = cyclingRecordDao.findUnFinishedByUserIdAndBicycleId(user.getUserId(), bicycle.getBicycleId());
+        CyclingRecord cyclingRecord = cyclingRecordDao.findUnFinishedByUserId(user.getUserId());
         {
             bicycle.setLocationX(locX);
             bicycle.setLocationY(locY);
@@ -53,15 +55,16 @@ public class CycleServiceImpl implements CycleService {
             cyclingRecordDao.update(cyclingRecord);
         }
         {
-            float tariff = 1;   // per hour
-            float hours = now.compareTo(cyclingRecord.getStartTime()) / 3600;
-            double cost = tariff * hours;
+            float cost = PriceCalculator.calc(cyclingRecord.getStartTime(), now);
             DealRecord dealRecord = new DealRecord();
+            dealRecord.setDealRecordId(String.valueOf(user.getUserId()) + 0 + now.getTime());
+            dealRecord.setUserId(user.getUserId());
             dealRecord.setActionTime(now);
-            dealRecord.setActionType((byte) 0);
+            dealRecord.setActionType((byte) 0 /*消费*/);
             dealRecord.setMoney(cost);
             dealRecordDao.save(dealRecord);
             user.setBalance(user.getBalance() - cost);
+            user.setScore(user.getScore() + Math.round(cost));
             userDao.update(user);
         }
         return true;
@@ -70,18 +73,52 @@ public class CycleServiceImpl implements CycleService {
     @Override
     public boolean unlock(int cardNum, int lockId) throws Exception {
         User user = userDao.findByCardNum(cardNum);
-        if (!user.available()) return false;
         Bicycle bicycle = bicycleDao.findByLockId(lockId);
+        try {
+            // 当前用户正在骑行
+            cyclingRecordDao.findUnFinishedByUserId(user.getUserId());
+            return false;
+        } catch (Exception ignored) {
+        }
+        try {
+            cyclingRecordDao.findUnFinishedByBicycleId(bicycle.getBicycleId());
+            // 当前车正在使用
+            return false;
+        } catch (Exception ignored) {
+            // 可用
+        }
+        if (!user.available()) return false;
         if (!bicycle.available()) return false;
         {
             CyclingRecord cyclingRecord = new CyclingRecord();
+            Date now = new Date();
+            cyclingRecord.setCyclingRecordId(String.valueOf(user.getUserId()) + now.getTime());
             cyclingRecord.setUserId(user.getUserId());
             cyclingRecord.setBicycleId(bicycle.getBicycleId());
-            cyclingRecord.setStartTime(new Date());
+            cyclingRecord.setStartTime(now);
             cyclingRecord.setStartLocX(bicycle.getLocationX());
             cyclingRecord.setStartLocY(bicycle.getLocationY());
             cyclingRecordDao.save(cyclingRecord);
         }
         return true;
+    }
+
+    private static class PriceCalculator {
+
+        static float calc(Date last, Date now) {
+            Assert.assertTrue(now.after(last));
+            float tariff = ConstValue.getTariff();
+            long start = last.getTime();
+            long end = now.getTime();
+            return tariff * unit((int) ((end - start) / (1000 * 60)));
+        }
+
+        private static int unit(int minutes) {
+            // 计费单元，向上取整
+            int calcUnit = ConstValue.getCalcUnit();
+            int s = minutes / calcUnit;
+            int y = minutes % calcUnit;
+            return y > 0 ? s + 1 : s;
+        }
     }
 }
