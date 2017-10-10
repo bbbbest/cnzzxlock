@@ -14,7 +14,7 @@ import javax.sql.DataSource;
 @Component("baseDao")
 public class BaseDao extends NamedParameterJdbcDaoSupport {
 
-    @Resource(name = "dataSource")
+    @Resource(name = "dataSource", type = DataSource.class)
     public void setSuperDataSource(DataSource dataSource) {
         super.setDataSource(dataSource);
     }

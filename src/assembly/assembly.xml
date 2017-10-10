@@ -38,7 +38,7 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>${project.build.directory}\conf</directory>
+            <directory>${project.build.directory}\config</directory>
             <outputDirectory>\conf</outputDirectory>
             <includes>
                 <include>*.properties</include>

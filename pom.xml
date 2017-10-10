@@ -92,7 +92,7 @@
                         </manifest>
                         <!-- 给清单文件添加键值对(配置文件外置) -->
                         <manifestEntries>
-                            <Class-Path>conf/</Class-Path>
+                            <Class-Path>config/</Class-Path>
                         </manifestEntries>
                     </archive>
                     <classesDirectory>
@@ -149,14 +149,16 @@
                 <configuration>
                     <appendAssemblyId>false</appendAssemblyId>
                     <descriptors>
-                        <descriptor>src/assembly/assembly.xml</descriptor>
+                        <!--描述文件路径-->
+                        <descriptors>src/assembly/assembly.xml</descriptors>
                     </descriptors>
                 </configuration>
-                <executions>
+                <executions>  <!--执行器 mvn assembly:assembly-->
                     <execution>
-                        <phase>package</phase>
+                        <id>distribution</id><!--名字任意 -->
+                        <phase>package</phase><!-- 绑定到package生命周期阶段上 -->
                         <goals>
-                            <goal>single</goal>
+                            <goal>single</goal><!-- 只运行一次 -->
                         </goals>
                     </execution>
                 </executions>
@@ -172,7 +174,6 @@
                 <includes>
                     <include>**/*.xml</include>
                     <include>**/*.tld</include>
-                    <!--<include>**/*.properties</include>-->
                 </includes>
                 <filtering>false</filtering>
             </resource>
@@ -182,7 +183,7 @@
                     <include>**/*.properties</include>
                 </includes>
                 <filtering>true</filtering>
-                <targetPath>${project.build.directory}/conf</targetPath>
+                <targetPath>${project.build.directory}/config</targetPath>
             </resource>
         </resources>
     </build>
