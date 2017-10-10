@@ -4,6 +4,7 @@
     <id>distribution</id>
     <formats>
         <format>zip</format>
+        <format>tar.gz</format>
     </formats>
     <fileSets>
         <fileSet>
@@ -38,7 +39,7 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>${project.build.directory}\config</directory>
+            <directory>${project.build.directory}\conf</directory>
             <outputDirectory>\conf</outputDirectory>
             <includes>
                 <include>*.properties</include>
