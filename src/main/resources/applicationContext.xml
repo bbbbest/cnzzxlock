@@ -5,12 +5,13 @@
        xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
     <context:component-scan base-package="cn.zzx.lock"/>
-    <context:property-placeholder location="classpath:druid.properties" file-encoding="utf-8" ignore-unresolvable="true"/>
+    <context:property-placeholder location="classpath:config.properties" file-encoding="utf-8" ignore-unresolvable="true"/>
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
         <!-- 基本属性 url、user、password -->
-        <property name="url" value="${jdbc.url}"/>
-        <property name="username" value="${jdbc.username}"/>
-        <property name="password" value="${jdbc.password}"/>
+        <property name="url"
+                  value="jdbc:mysql://127.0.0.1:3306/${dbName}?characterEncoding=utf8&amp;useSSL=true"/>
+        <property name="username" value="${dbUsername}"/>
+        <property name="password" value="${dbPassword}"/>
 
         <!-- 配置初始化大小、最小、最大 -->
         <property name="initialSize" value="1"/>
@@ -40,8 +41,8 @@
     </bean>
 
     <bean id="threadPool" class="cn.zzx.lock.module.ThreadPool" init-method="init" destroy-method="shutdown">
-        <property name="coreSize" value="5"/>
-        <property name="maxSize" value="10"/>
+        <property name="coreSize" value="${coreSize}"/>
+        <property name="maxSize" value="${maxSize}"/>
     </bean>
 
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
@@ -61,8 +62,8 @@
     </aop:config>
 
     <bean id="portListener" class="cn.zzx.lock.module.PortListener" init-method="init" destroy-method="stop">
-        <property name="port" value="8080"/>
+        <property name="port" value="${port}"/>
         <!--if maxConnections == 0, listener will blocking before accept request.-->
-        <property name="maxConnections" value="5000"/>
+        <property name="maxConnections" value="${maxConnections}"/>
     </bean>
 </beans>

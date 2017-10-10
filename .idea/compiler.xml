@@ -6,10 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="cn.zzx.lock" />
         <module name="cnzzxlock" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="cn.zzx.lock" target="1.8" />
       <module name="cnzzxlock" target="1.8" />
     </bytecodeTargetLevel>
   </component>

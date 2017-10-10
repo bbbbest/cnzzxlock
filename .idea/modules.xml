@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/cn.zzx.lock.iml" filepath="$PROJECT_DIR$/cn.zzx.lock.iml" />
       <module fileurl="file://$PROJECT_DIR$/cnzzxlock.iml" filepath="$PROJECT_DIR$/cnzzxlock.iml" />
     </modules>
   </component>

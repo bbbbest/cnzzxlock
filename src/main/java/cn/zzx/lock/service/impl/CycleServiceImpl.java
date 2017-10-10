@@ -110,14 +110,14 @@ public class CycleServiceImpl implements CycleService {
             float tariff = ConstValue.getTariff();
             long start = last.getTime();
             long end = now.getTime();
-            return tariff * unit((int) ((end - start) / (1000 * 60)));
+            return tariff * unit((int) ((end - start) / 1000));
         }
 
-        private static int unit(int minutes) {
+        private static int unit(int mills) {
             // 计费单元，向上取整
             int calcUnit = ConstValue.getCalcUnit();
-            int s = minutes / calcUnit;
-            int y = minutes % calcUnit;
+            int s = mills / (calcUnit * 60/*one minute*/);
+            int y = mills % calcUnit;
             return y > 0 ? s + 1 : s;
         }
     }

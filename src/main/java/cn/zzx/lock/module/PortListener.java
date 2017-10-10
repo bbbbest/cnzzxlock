@@ -50,7 +50,7 @@ public class PortListener implements Runnable {
                 logger.error("Uncaught Exception happened in PortListener", e);
                 status = DESTROYED;
             });
-            logger.info("PortListener has completed initialization.");
+            logger.info("PortListener has completed initialization. port: " + port);
         } catch (IOException e) {
             logger.error("PortListener has not completed initialization. Because of: " + e.getMessage());
             e.printStackTrace();

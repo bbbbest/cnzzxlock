@@ -28,6 +28,7 @@ public final class SmartLockServer {
             if (context.isRunning()) {
                 System.out.println("closed in SignalHandler.");
                 context.close();
+                System.exit(0);
             }
         };
         Signal.handle(new Signal("INT"), sh);
