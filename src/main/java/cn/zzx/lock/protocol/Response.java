@@ -5,7 +5,7 @@ package cn.zzx.lock.protocol;
  * @since 2017/10/8
  */
 public enum Response {
-    OPEN("open"), CLOSE("close");
+    OPEN("open"), CLOSE("close"), ERROR("error");
 
     private String val;
 

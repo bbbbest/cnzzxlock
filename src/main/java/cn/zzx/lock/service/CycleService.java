@@ -1,5 +1,11 @@
 package cn.zzx.lock.service;
 
+import cn.zzx.lock.db.po.Bicycle;
+import cn.zzx.lock.db.po.CyclingRecord;
+import cn.zzx.lock.db.po.User;
+
+import java.util.Optional;
+
 /**
  * 整个骑车过程的服务层
  *
@@ -9,7 +15,11 @@ package cn.zzx.lock.service;
  */
 public interface CycleService {
 
-    boolean lock(int cardNum, int lockId, double locX, double locY, float energy) throws Exception;
+    Optional<Object[]> findUserAndBicycleByCNumAndLId(int cardNum, int lockId);
 
-    boolean unlock(int cardNum, int lockId) throws Exception;
+    Optional<CyclingRecord> findCyclingRecord(User user, Bicycle bicycle);
+
+    boolean lock(User user, Bicycle bicycle, CyclingRecord cyclingRecord, double locX, double locY, float energy) throws Exception;
+
+    boolean unlock(User user, Bicycle bicycle) throws Exception;
 }

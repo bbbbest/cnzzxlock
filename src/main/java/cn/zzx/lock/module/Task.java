@@ -1,5 +1,8 @@
 package cn.zzx.lock.module;
 
+import cn.zzx.lock.db.po.Bicycle;
+import cn.zzx.lock.db.po.CyclingRecord;
+import cn.zzx.lock.db.po.User;
 import cn.zzx.lock.protocol.*;
 import cn.zzx.lock.service.CycleService;
 import org.apache.logging.log4j.LogManager;
@@ -9,6 +12,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
+import java.util.Optional;
 
 /**
  * @author fzh
@@ -70,14 +74,33 @@ public class Task implements Runnable {
      * @throws IOException 写回信息出错
      */
     private void handleLock(SocketChannel sc, LockPacket packet) throws IOException {
+        Response response;
         try {
-            // try to lock in database
-            service.lock(packet.getCardNum(), packet.getLockId(), packet.getLatitude(), packet.getLongitude(), packet.getEnergy());
-            // success
-            respond(sc, Response.CLOSE);
+            Optional<Object[]> uab = service.findUserAndBicycleByCNumAndLId(packet.getCardNum(), packet.getLockId());
+            if (uab.isPresent()) {
+                // user and bicycle exist
+                Object[] ub = uab.get();
+                User u = (User) ub[0];
+                Bicycle b = (Bicycle) ub[1];
+                Optional<CyclingRecord> cr = service.findCyclingRecord(u, b);
+                if (cr.isPresent()){
+                    // running
+                    service.lock(u,b, cr.get(),packet.getLongitude(), packet.getLatitude(), packet.getEnergy());
+                    response = Response.CLOSE;
+                } else {
+                    // stopped
+                    response = Response.ERROR;
+                }
+            }
+            else {
+                // user or bicycle not exist
+                response = Response.ERROR;
+            }
         } catch (Exception e) {
-            respond(sc, Response.OPEN);
+            // lock failed
+            response = Response.OPEN;
         }
+        respond(sc, response);
     }
 
     /**
@@ -87,18 +110,36 @@ public class Task implements Runnable {
      * @throws IOException 写回信息出错
      */
     private void handleUnlock(SocketChannel sc, UnlockPacket packet) throws IOException {
+        Response response;
         try {
-            // try to unlock in database
-            if (service.unlock(packet.getCardNum(), packet.getLockId())) {
-                // success
-                respond(sc, Response.OPEN);
-            } else {
-                // 一卡多用 或 一车多用
-                respond(sc, Response.CLOSE);
+            Optional<Object[]> uab = service.findUserAndBicycleByCNumAndLId(packet.getCardNum(), packet.getLockId());
+            if (uab.isPresent()) {
+                // user and bicycle exist
+                Object[] ub = uab.get();
+                User u = (User) ub[0];
+                Bicycle b = (Bicycle) ub[1];
+                Optional<CyclingRecord> cr = service.findCyclingRecord(u, b);
+                if (!cr.isPresent()) {
+                    // stopped
+                    if (service.unlock(u, b)) {
+                        // unlock success
+                        response = Response.OPEN;
+                    } else {
+                        response = Response.CLOSE;
+                    }
+                } else {
+                    response = Response.OPEN;
+                }
+            }
+            else {
+                // user or bicycle not exist
+                response = Response.ERROR;
             }
         } catch (Exception e) {
-            respond(sc, Response.CLOSE);
+            // unlock failed
+            response = Response.CLOSE;
         }
+        respond(sc, response);
     }
 
     private void respond(SocketChannel channel, Response op) throws IOException {

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * @author fzh
@@ -36,11 +37,32 @@ public class CycleServiceImpl implements CycleService {
     private UserDao userDao;
 
     @Override
-    public boolean lock(int cardNum, int lockId, double locX, double locY, float energy) throws Exception {
+    public Optional<Object[]> findUserAndBicycleByCNumAndLId(int cardNum, int lockId) {
+        Object[] objects = new Object[2];
+        try {
+            objects[0] = userDao.findByCardNum(cardNum);
+            objects[1] = bicycleDao.findByLockId(lockId);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+        return Optional.of(objects);
+    }
+
+    @Override
+    public Optional<CyclingRecord> findCyclingRecord(User user, Bicycle bicycle) {
+        CyclingRecord cyclingRecord;
+        try {
+            // 当前用户正在骑行
+            cyclingRecord = cyclingRecordDao.findUnFinishedByUserIdOrBicycleId(user.getUserId(), bicycle.getBicycleId());
+        } catch (Exception ignored) {
+            return Optional.empty();
+        }
+        return Optional.of(cyclingRecord);
+    }
+
+    @Override
+    public boolean lock(User user, Bicycle bicycle, CyclingRecord cyclingRecord, double locX, double locY, float energy) throws Exception {
         Date now = new Date(System.currentTimeMillis());
-        User user = userDao.findByCardNum(cardNum);
-        Bicycle bicycle = bicycleDao.findByLockId(lockId);
-        CyclingRecord cyclingRecord = cyclingRecordDao.findUnFinishedByUserId(user.getUserId());
         {
             bicycle.setLocationX(locX);
             bicycle.setLocationY(locY);
@@ -71,22 +93,7 @@ public class CycleServiceImpl implements CycleService {
     }
 
     @Override
-    public boolean unlock(int cardNum, int lockId) throws Exception {
-        User user = userDao.findByCardNum(cardNum);
-        Bicycle bicycle = bicycleDao.findByLockId(lockId);
-        try {
-            // 当前用户正在骑行
-            cyclingRecordDao.findUnFinishedByUserId(user.getUserId());
-            return false;
-        } catch (Exception ignored) {
-        }
-        try {
-            cyclingRecordDao.findUnFinishedByBicycleId(bicycle.getBicycleId());
-            // 当前车正在使用
-            return false;
-        } catch (Exception ignored) {
-            // 可用
-        }
+    public boolean unlock(User user, Bicycle bicycle) throws Exception {
         if (!user.available()) return false;
         if (!bicycle.available()) return false;
         {

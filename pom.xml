@@ -95,8 +95,6 @@
                             <Class-Path>conf/</Class-Path>
                         </manifestEntries>
                     </archive>
-                    <classesDirectory>
-                    </classesDirectory>
                 </configuration>
             </plugin>
             <!-- 拷贝依赖的jar包到lib目录 -->

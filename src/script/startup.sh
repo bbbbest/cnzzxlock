@@ -1,26 +1,44 @@
 #!/bin/bash
-echo 'finding executable file...'
-readonly TARGET_FILE=smart-lock-server.jar
 
+# 目标执行文件
+readonly TARGET_FILE=smart-lock-server.jar
 # 是否存在执行文件的标志
 declare -i exist
 
-# 判断本目录下是否存在该执行文件 
-if [ -x $TARGET_FILE ]; then
-	echo 'found executable file!'
-	# 存在
-	exist=1
-else
-	echo 'not found executable file!'
-	# 不存在
-	exist=0
-fi
-
-if [[ $exist = 1 ]]; then
-	running=`java -jar -Xmx512m -Xmx256m TARGET_FILE &`
-	if [[ $running = 0 ]]; then
-		echo 'server started!'
+# 检查进程ID
+checkpid() {
+	P=`jps -l | grep "$TARGET_FILE" | awk '{print $1}'`
+	if [ -n "$P" ]; then
+        echo "Server start successfully!"
 	else
-		echo 'server start failed!'
+		echo "Server start failed!"
 	fi
-fi
+}
+
+checkfile() {
+    echo 'finding executable file...'
+    # 判断本目录下是否存在该执行文件
+    if [ -f "$TARGET_FILE" ]; then
+        # 存在
+        exist=1
+        echo 'found executable file!'
+    else
+        # 不存在
+        exist=0
+        echo 'not found executable file!'
+    fi
+}
+
+runifexist() {
+    if [[ $exist = 1 ]]; then
+	    nohup java -jar -Xmx512m -Xmx256m $TARGET_FILE >/dev/null 2>&1 &
+	    checkpid
+    fi
+}
+
+main() {
+checkfile
+runifexist
+}
+
+main

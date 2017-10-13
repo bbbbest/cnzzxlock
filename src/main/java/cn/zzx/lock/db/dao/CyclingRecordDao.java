@@ -16,8 +16,7 @@ public interface CyclingRecordDao {
      * @return the cycling record
      * @throws Exception the exception
      */
-    CyclingRecord findUnFinishedByUserId(int userId) throws Exception;
-    CyclingRecord findUnFinishedByBicycleId(int bicycleId) throws Exception;
+    CyclingRecord findUnFinishedByUserIdOrBicycleId(int userId, int bicycleId) throws Exception;
 
     /**
      * 保存骑行记录，设置：结束时间为开始时间前 1 min
