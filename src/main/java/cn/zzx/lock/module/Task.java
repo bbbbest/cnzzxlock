@@ -82,7 +82,7 @@ public class Task implements Runnable {
                 Object[] ub = uab.get();
                 User u = (User) ub[0];
                 Bicycle b = (Bicycle) ub[1];
-                Optional<CyclingRecord> cr = service.findCyclingRecord(u, b);
+                Optional<CyclingRecord> cr = service.findCyclingRecordByAll(u, b);
                 if (cr.isPresent()){
                     // running
                     service.lock(u,b, cr.get(),packet.getLongitude(), packet.getLatitude(), packet.getEnergy());
@@ -118,7 +118,7 @@ public class Task implements Runnable {
                 Object[] ub = uab.get();
                 User u = (User) ub[0];
                 Bicycle b = (Bicycle) ub[1];
-                Optional<CyclingRecord> cr = service.findCyclingRecord(u, b);
+                Optional<CyclingRecord> cr = service.findCyclingRecordByOne(u, b);
                 if (!cr.isPresent()) {
                     // stopped
                     if (service.unlock(u, b)) {

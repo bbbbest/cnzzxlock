@@ -49,7 +49,19 @@ public class CycleServiceImpl implements CycleService {
     }
 
     @Override
-    public Optional<CyclingRecord> findCyclingRecord(User user, Bicycle bicycle) {
+    public Optional<CyclingRecord> findCyclingRecordByAll(User user, Bicycle bicycle) {
+        CyclingRecord cyclingRecord;
+        try {
+            // 当前用户正在骑行
+            cyclingRecord = cyclingRecordDao.findUnFinishedByUserIdAndBicycleId(user.getUserId(), bicycle.getBicycleId());
+        } catch (Exception ignored) {
+            return Optional.empty();
+        }
+        return Optional.of(cyclingRecord);
+    }
+
+    @Override
+    public Optional<CyclingRecord> findCyclingRecordByOne(User user, Bicycle bicycle) {
         CyclingRecord cyclingRecord;
         try {
             // 当前用户正在骑行

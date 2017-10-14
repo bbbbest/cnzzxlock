@@ -15,6 +15,13 @@ import org.springframework.stereotype.Repository;
 public class CyclingRecordDaoImpl extends BaseDao implements CyclingRecordDao {
 
     @Override
+    public CyclingRecord findUnFinishedByUserIdAndBicycleId(int userId, int bicycleId) throws Exception {
+        String sql = "SELECT * FROM cyclingrecord WHERE date_sub(startTime, INTERVAL 10 MINUTE) = endTime AND (userId = ? AND bicycleId = ?)";
+        RowMapper<CyclingRecord> rowMapper = new BeanPropertyRowMapper<>(CyclingRecord.class);
+        return getJdbcTemplate().queryForObject(sql, rowMapper, userId, bicycleId);
+    }
+
+    @Override
     public CyclingRecord findUnFinishedByUserIdOrBicycleId(int userId, int bicycleId) throws Exception {
         String sql = "SELECT * FROM cyclingrecord WHERE date_sub(startTime, INTERVAL 10 MINUTE) = endTime AND (userId = ? OR bicycleId = ?)";
         RowMapper<CyclingRecord> rowMapper = new BeanPropertyRowMapper<>(CyclingRecord.class);

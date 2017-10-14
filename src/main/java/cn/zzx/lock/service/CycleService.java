@@ -17,7 +17,9 @@ public interface CycleService {
 
     Optional<Object[]> findUserAndBicycleByCNumAndLId(int cardNum, int lockId);
 
-    Optional<CyclingRecord> findCyclingRecord(User user, Bicycle bicycle);
+    Optional<CyclingRecord> findCyclingRecordByAll(User user, Bicycle bicycle);
+
+    Optional<CyclingRecord> findCyclingRecordByOne(User user, Bicycle bicycle);
 
     boolean lock(User user, Bicycle bicycle, CyclingRecord cyclingRecord, double locX, double locY, float energy) throws Exception;
 
