@@ -53,7 +53,9 @@ public class ThreadPool {
 
     public void setCoreSize(int coreSize) {
         this.coreSize = coreSize;
-        if (realExecutor != null) realExecutor.setCorePoolSize(coreSize);
+        if (realExecutor != null) {
+            realExecutor.setCorePoolSize(coreSize);
+        }
     }
 
     public int getMaxSize() {
@@ -62,7 +64,9 @@ public class ThreadPool {
 
     public void setMaxSize(int maxSize) {
         this.maxSize = maxSize;
-        if (realExecutor != null) realExecutor.setMaximumPoolSize(maxSize);
+        if (realExecutor != null) {
+            realExecutor.setMaximumPoolSize(maxSize);
+        }
     }
 
     public void setWaitTime(int waitTime, TimeUnit waitTimeUnit) {

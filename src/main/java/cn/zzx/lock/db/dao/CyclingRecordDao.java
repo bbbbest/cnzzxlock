@@ -12,7 +12,8 @@ public interface CyclingRecordDao {
     /**
      * 根据用户编号和自行车编号找到一条未完成的骑行记录，判断依据：结束时间是否为开始时间的前 1 min
      *
-     * @param userId the user id
+     * @param userId    the user id
+     * @param bicycleId the bicycle id
      * @return the cycling record
      * @throws Exception the exception
      */
@@ -21,7 +22,8 @@ public interface CyclingRecordDao {
     /**
      * 根据用户编号和自行车编号找到一条未完成的骑行记录，判断依据：结束时间是否为开始时间的前 1 min
      *
-     * @param userId the user id
+     * @param userId    the user id
+     * @param bicycleId the bicycle id
      * @return the cycling record
      * @throws Exception the exception
      */

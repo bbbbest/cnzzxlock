@@ -11,10 +11,10 @@ import org.springframework.stereotype.Repository;
  */
 @Repository("dealRecordDao")
 public class DealRecordDaoImpl extends BaseDao implements DealRecordDao {
-    @Override
-    public void save(DealRecord record) throws Exception {
-        String sql = "INSERT INTO dealrecord(dealRecordId, userId, actionType, money, actionTime) " +
-                "VALUES(?,?,?,?,?)";
-        getJdbcTemplate().update(sql, record.getDealRecordId(), record.getUserId(), record.getActionType(), record.getMoney(), record.getActionTime());
-    }
+  @Override
+  public void save(DealRecord record) throws Exception {
+    String sql = "INSERT INTO dealrecord(dealRecordId, userId, actionType, money, actionTime, curbalance, alipayStatus) " +
+        "VALUES(?,?,?,?,?,?,?)";
+    getJdbcTemplate().update(sql, record.getDealRecordId(), record.getUserId(), record.getActionType(), record.getMoney(), record.getActionTime(), record.getCurBalance(), record.getStatus());
+  }
 }

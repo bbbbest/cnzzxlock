@@ -1,5 +1,6 @@
 package cn.zzx.lock.db.po;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -7,65 +8,90 @@ import java.util.Date;
  * @since 2017/10/3
  */
 public class DealRecord {
-    private String dealRecordId;
-    private int userId;
-    private byte actionType;
-    private double money;
-    private Date actionTime;
+  /**
+   * 消费类型的订单记录
+   */
+  public static final Byte CONSUMPTION = 0;
+  public static final Byte LOCK_RECORD = 0;
+  private String dealRecordId;
+  private Integer userId;
+  private Byte actionType;
+  private BigDecimal money;
+  private Date actionTime;
+  private BigDecimal curBalance;
+  private Byte status;
 
-    public Date getActionTime() {
-        return actionTime;
-    }
+  public Date getActionTime() {
+    return actionTime;
+  }
 
-    public void setActionTime(Date actionTime) {
-        this.actionTime = actionTime;
-    }
+  public void setActionTime(Date actionTime) {
+    this.actionTime = actionTime;
+  }
 
-    public String getDealRecordId() {
-        return dealRecordId;
-    }
+  public String getDealRecordId() {
+    return dealRecordId;
+  }
 
-    public void setDealRecordId(String dealRecordId) {
-        this.dealRecordId = dealRecordId;
-    }
+  public void setDealRecordId(String dealRecordId) {
+    this.dealRecordId = dealRecordId;
+  }
 
-    public int getUserId() {
-        return userId;
-    }
+  public Integer getUserId() {
+    return userId;
+  }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
+  public void setUserId(Integer userId) {
+    this.userId = userId;
+  }
 
-    public byte getActionType() {
-        return actionType;
-    }
+  public Byte getActionType() {
+    return actionType;
+  }
 
-    public void setActionType(byte actionType) {
-        this.actionType = actionType;
-    }
+  public void setActionType(Byte actionType) {
+    this.actionType = actionType;
+  }
 
-    public double getMoney() {
-        return money;
-    }
+  public BigDecimal getMoney() {
+    return money;
+  }
 
-    public void setMoney(double money) {
-        this.money = money;
-    }
+  public void setMoney(BigDecimal money) {
+    this.money = money;
+  }
 
-    @Override
-    public String toString() {
-        return "DealRecord{" +
-                "dealRecordId=" + dealRecordId +
-                ", userId=" + userId +
-                ", actionType=" + actionType +
-                ", money=" + money +
-                ", actionTime=" + actionTime +
-                '}';
-    }
+  public BigDecimal getCurBalance() {
+    return curBalance;
+  }
 
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof DealRecord && ((DealRecord) obj).dealRecordId == this.dealRecordId;
-    }
+  public void setCurBalance(BigDecimal curBalance) {
+    this.curBalance = curBalance;
+  }
+
+  public Byte getStatus() {
+    return status;
+  }
+
+  public void setStatus(Byte status) {
+    this.status = status;
+  }
+
+  @Override
+  public String toString() {
+    return "DealRecord{" +
+        "dealRecordId='" + dealRecordId + '\'' +
+        ", userId=" + userId +
+        ", actionType=" + actionType +
+        ", money=" + money +
+        ", actionTime=" + actionTime +
+        ", curBalance=" + curBalance +
+        ", status=" + status +
+        '}';
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return obj instanceof DealRecord && this.dealRecordId != null && this.dealRecordId.equals(((DealRecord) obj).dealRecordId);
+  }
 }

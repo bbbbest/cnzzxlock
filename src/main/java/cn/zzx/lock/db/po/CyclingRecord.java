@@ -8,14 +8,14 @@ import java.util.Date;
  */
 public class CyclingRecord {
     private String cyclingRecordId;
-    private int bicycleId;
-    private int userId;
+    private Integer bicycleId;
+    private Integer userId;
     private Date startTime;
     private Date endTime;
-    private double startLocX;
-    private double startLocY;
-    private double endLocX;
-    private double endLocY;
+    private Double startLocX;
+    private Double startLocY;
+    private Double endLocX;
+    private Double endLocY;
 
     public String getCyclingRecordId() {
         return cyclingRecordId;
@@ -25,19 +25,19 @@ public class CyclingRecord {
         this.cyclingRecordId = cyclingRecordId;
     }
 
-    public int getBicycleId() {
+    public Integer getBicycleId() {
         return bicycleId;
     }
 
-    public void setBicycleId(int bicycleId) {
+    public void setBicycleId(Integer bicycleId) {
         this.bicycleId = bicycleId;
     }
 
-    public int getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
@@ -57,35 +57,35 @@ public class CyclingRecord {
         this.endTime = endTime;
     }
 
-    public double getStartLocX() {
+    public Double getStartLocX() {
         return startLocX;
     }
 
-    public void setStartLocX(double startLocX) {
+    public void setStartLocX(Double startLocX) {
         this.startLocX = startLocX;
     }
 
-    public double getStartLocY() {
+    public Double getStartLocY() {
         return startLocY;
     }
 
-    public void setStartLocY(double startLocY) {
+    public void setStartLocY(Double startLocY) {
         this.startLocY = startLocY;
     }
 
-    public double getEndLocX() {
+    public Double getEndLocX() {
         return endLocX;
     }
 
-    public void setEndLocX(double endLocX) {
+    public void setEndLocX(Double endLocX) {
         this.endLocX = endLocX;
     }
 
-    public double getEndLocY() {
+    public Double getEndLocY() {
         return endLocY;
     }
 
-    public void setEndLocY(double endLocY) {
+    public void setEndLocY(Double endLocY) {
         this.endLocY = endLocY;
     }
 
@@ -106,6 +106,6 @@ public class CyclingRecord {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof CyclingRecord && this.cyclingRecordId == ((CyclingRecord) obj).cyclingRecordId;
+        return obj instanceof CyclingRecord && this.cyclingRecordId != null && this.cyclingRecordId.equals(((CyclingRecord) obj).cyclingRecordId);
     }
 }

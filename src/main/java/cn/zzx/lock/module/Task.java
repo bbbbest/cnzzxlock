@@ -34,7 +34,7 @@ public class Task implements Runnable {
             SocketChannel sc = (SocketChannel) sk.channel();
 
             // whole packet will less than or equal to response packet's valid size.
-            ByteBuffer buf = ByteBuffer.allocate(LockPacket.RESPONSE_VALID_SIZE);
+            ByteBuffer buf = ByteBuffer.allocate(LockAbstractPacket.RESPONSE_VALID_SIZE);
 
             // valid connection
             if (sc.read(buf) > 0) {
@@ -45,13 +45,13 @@ public class Task implements Runnable {
 
                 // create packet
                 try {
-                    Packet packet = Packet.of(data);
+                    AbstractPacket packet = AbstractPacket.of(data);
                     // recheck packet's validity
                     if (packet.isValid()) {
-                        if (packet instanceof LockPacket) {
-                            handleLock(sc, (LockPacket) packet);
+                        if (packet instanceof LockAbstractPacket) {
+                            handleLock(sc, (LockAbstractPacket) packet);
                         } else {
-                            handleUnlock(sc, (UnlockPacket) packet);
+                            handleUnlock(sc, (UnlockAbstractPacket) packet);
                         }
                     } else {
                         respond(sc, Response.CLOSE);
@@ -73,7 +73,7 @@ public class Task implements Runnable {
      * @param packet packet
      * @throws IOException 写回信息出错
      */
-    private void handleLock(SocketChannel sc, LockPacket packet) throws IOException {
+    private void handleLock(SocketChannel sc, LockAbstractPacket packet) throws IOException {
         Response response;
         try {
             Optional<Object[]> uab = service.findUserAndBicycleByCNumAndLId(packet.getCardNum(), packet.getLockId());
@@ -109,7 +109,7 @@ public class Task implements Runnable {
      * @param packet packet
      * @throws IOException 写回信息出错
      */
-    private void handleUnlock(SocketChannel sc, UnlockPacket packet) throws IOException {
+    private void handleUnlock(SocketChannel sc, UnlockAbstractPacket packet) throws IOException {
         Response response;
         try {
             Optional<Object[]> uab = service.findUserAndBicycleByCNumAndLId(packet.getCardNum(), packet.getLockId());

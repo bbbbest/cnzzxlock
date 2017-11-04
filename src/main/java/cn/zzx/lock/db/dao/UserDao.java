@@ -3,7 +3,7 @@ package cn.zzx.lock.db.dao;
 import cn.zzx.lock.db.po.User;
 
 /**
- * The interface User dao.
+ * 用户信息的DAO
  *
  * @author fzh
  * @since 2017 /10/3
@@ -21,6 +21,8 @@ public interface UserDao {
     /**
      * 更新用户余额
      *
+     * @param user the user
+     * @throws Exception the exception
      */
     void update(User user) throws Exception;
 }

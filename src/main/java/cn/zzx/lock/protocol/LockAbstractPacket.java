@@ -6,14 +6,14 @@ import java.io.Serializable;
  * @author fzh
  * @since 2017/10/8
  */
-public final class LockPacket extends Packet implements Serializable {
+public final class LockAbstractPacket extends AbstractPacket implements Serializable {
     private static final long serialVersionUID = 1407083814451324081L;
     public static final int RESPONSE_VALID_SIZE = 75;
     private double longitude;
     private double latitude;
     private float energy;
 
-    public LockPacket(byte[] source) {
+    public LockAbstractPacket(byte[] source) {
         super(source);
         if (source.length == RESPONSE_VALID_SIZE) {
             cardNum = Integer.parseInt(new String(source, 0, 16));

@@ -14,16 +14,26 @@ import org.springframework.stereotype.Repository;
 @Repository("userDao")
 public class UserDaoImpl extends BaseDao implements UserDao {
 
-    @Override
-    public User findByCardNum(long card) throws Exception {
-        String sql = "select * from user where cardNumber=?";
-        RowMapper<User> rowMapper = new BeanPropertyRowMapper<>(User.class);
-        return getJdbcTemplate().queryForObject(sql, rowMapper, card);
-    }
+  @Override
+  public User findByCardNum(long card) throws Exception {
+    String sql = "SELECT\n" +
+        "  userId,\n" +
+        "  userName AS username,\n" +
+        "  `name`,\n" +
+        "  cardNumber,\n" +
+        "  score,\n" +
+        "  phone,\n" +
+        "  status,\n" +
+        "  balance,\n" +
+        "  userInfoId\n" +
+        "FROM user WHERE cardNumber=?";
+    RowMapper<User> rowMapper = new BeanPropertyRowMapper<>(User.class);
+    return getJdbcTemplate().queryForObject(sql, rowMapper, card);
+  }
 
-    @Override
-    public void update(User user) throws Exception {
-        String sql = "update user set score=?, balance=? where userId=?";
-        getJdbcTemplate().update(sql, user.getScore(), user.getBalance(), user.getUserId());
-    }
+  @Override
+  public void update(User user) throws Exception {
+    String sql = "UPDATE user SET score=?, balance=? WHERE userId=?";
+    getJdbcTemplate().update(sql, user.getScore(), user.getBalance(), user.getUserId());
+  }
 }

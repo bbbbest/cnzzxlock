@@ -51,9 +51,7 @@
 
     <tx:advice id="txAdvice">
         <tx:attributes>
-            <tx:method name="find*" propagation="NEVER"/>
-            <tx:method name="update*" propagation="REQUIRES_NEW"/>
-            <tx:method name="save*" propagation="REQUIRES_NEW"/>
+            <tx:method name="*" propagation="REQUIRES_NEW"/>
         </tx:attributes>
     </tx:advice>
     <aop:config>

@@ -1,115 +1,131 @@
 package cn.zzx.lock.db.po;
 
+import java.math.BigDecimal;
+
 /**
  * @author fzh
  * @since 2017/10/3
  */
 public class User {
-    private int userId;
-    private String username;
-    private String password;
-    private String name;
-    private int cardNumber;
-    private int score;
-    private String phone;
-    private byte status;
-    private double balance;
+  public static final Byte NORMAL_STATUS = 1;
+  private Integer userId;
+  private String username;
+  private String password;
+  private String name;
+  private Integer cardNumber;
+  private Integer score;
+  private String phone;
+  private Byte status;
+  private BigDecimal balance;
+  private Integer userInfoId;
 
-    public int getUserId() {
-        return userId;
-    }
+  public Integer getUserId() {
+    return userId;
+  }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
+  public void setUserId(Integer userId) {
+    this.userId = userId;
+  }
 
-    public String getUsername() {
-        return username;
-    }
+  public String getUsername() {
+    return username;
+  }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+  public void setUsername(String username) {
+    this.username = username;
+  }
 
-    public String getPassword() {
-        return password;
-    }
+  public String getPassword() {
+    return password;
+  }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public int getCardNumber() {
-        return cardNumber;
-    }
+  public Integer getCardNumber() {
+    return cardNumber;
+  }
 
-    public void setCardNumber(int cardNumber) {
-        this.cardNumber = cardNumber;
-    }
+  public void setCardNumber(Integer cardNumber) {
+    this.cardNumber = cardNumber;
+  }
 
-    public int getScore() {
-        return score;
-    }
+  public Integer getScore() {
+    return score;
+  }
 
-    public void setScore(int score) {
-        this.score = score;
-    }
+  public void setScore(Integer score) {
+    this.score = score;
+  }
 
-    public String getPhone() {
-        return phone;
-    }
+  public String getPhone() {
+    return phone;
+  }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
+  public void setPhone(String phone) {
+    this.phone = phone;
+  }
 
-    public byte getStatus() {
-        return status;
-    }
+  public Byte getStatus() {
+    return status;
+  }
 
-    public void setStatus(byte status) {
-        this.status = status;
-    }
+  public void setStatus(Byte status) {
+    this.status = status;
+  }
 
-    public double getBalance() {
-        return balance;
-    }
+  public BigDecimal getBalance() {
+    return balance;
+  }
 
-    public void setBalance(double balance) {
-        this.balance = balance;
-    }
+  public void setBalance(BigDecimal balance) {
+    this.balance = balance;
+  }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId=" + userId +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", name='" + name + '\'' +
-                ", cardNumber=" + cardNumber +
-                ", score=" + score +
-                ", phone='" + phone + '\'' +
-                ", status=" + status +
-                ", balance=" + balance +
-                '}';
-    }
+  public Integer getUserInfoId() {
+    return userInfoId;
+  }
 
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof User && ((User) obj).userId == this.userId;
-    }
+  public void setUserInfoId(Integer userInfoId) {
+    this.userInfoId = userInfoId;
+  }
 
-    /**
-     * 判断该用户是否可以骑行，判断标准为：该用户为正常状态且余额大于0
-     * @return 该用户是否可骑行
-     */
-    public boolean available(){return status == 1 && balance > 0;}
+  @Override
+  public String toString() {
+    return "User{" +
+        "userId=" + userId +
+        ", username='" + username + '\'' +
+        ", password='" + password + '\'' +
+        ", name='" + name + '\'' +
+        ", cardNumber=" + cardNumber +
+        ", score=" + score +
+        ", phone='" + phone + '\'' +
+        ", status=" + status +
+        ", balance=" + balance +
+        ", userInfoId=" + userInfoId +
+        '}';
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return obj instanceof User && this.userId != null && this.userId.equals(((User) obj).userId);
+  }
+
+  /**
+   * 判断该用户是否可以骑行，判断标准为：该用户为正常状态且余额大于0
+   *
+   * @return 该用户是否可骑行
+   */
+  public boolean available() {
+    return NORMAL_STATUS.equals(status) && balance.intValue() > 0;
+  }
 }

@@ -3,7 +3,7 @@ package cn.zzx.lock.db.dao;
 import cn.zzx.lock.db.po.DealRecord;
 
 /**
- * The interface Deal record dao.
+ * 消费记录的DAO
  *
  * @author fzh
  * @since 2017 /10/3
