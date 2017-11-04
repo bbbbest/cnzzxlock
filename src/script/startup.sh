@@ -31,7 +31,7 @@ checkfile() {
 
 runifexist() {
     if [[ $exist = 1 ]]; then
-	    nohup java -jar -Xmx512m -Xmx256m $TARGET_FILE >/dev/null 2>&1 &
+	    nohup java -jar -Xmx512m -Xms256m $TARGET_FILE >/dev/null 2>&1 &
 	    checkpid
     fi
 }
