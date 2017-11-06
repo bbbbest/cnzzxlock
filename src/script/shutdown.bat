@@ -4,8 +4,7 @@ for /f "delims=" %%i in ('jps -l ^| find /i "smart-lock-server.jar"') do set "T=
 if T == -1 goto error
 echo Find running application...
 echo Closing...
-set PID="%T:~0,-22%"
-start "" taskkill /f /pid %PID%
+taskkill /F /FI "imagename eq javaw.exe"
 echo Application has been closed!
 goto quit
 :error
