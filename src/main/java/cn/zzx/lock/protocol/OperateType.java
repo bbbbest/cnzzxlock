@@ -21,9 +21,9 @@ public enum OperateType {
   }
 
   static OperateType of(byte val) {
-    if (val != LOCK.value && val != UNLOCK.value) {
+    if (val != LOCK.value && val != UNLOCK.value && val != CONFIG.value) {
       throw new RuntimeException("OperationType should valid.");
     }
-    return val == LOCK.value ? LOCK : UNLOCK;
+    return val == LOCK.value ? LOCK : val == CONFIG.value ? CONFIG : UNLOCK;
   }
 }
