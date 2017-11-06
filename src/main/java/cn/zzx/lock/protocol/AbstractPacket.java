@@ -38,11 +38,14 @@ public abstract class AbstractPacket {
   public abstract boolean isValid();
 
   public static AbstractPacket of(byte[] source) throws UnresolvedPacketException {
-    if (source.length == UnlockAbstractPacket.REQUEST_VALID_SIZE) {
-      return new UnlockAbstractPacket(source);
+    if (source.length == UnlockPacket.REQUEST_VALID_SIZE) {
+      return new UnlockPacket(source);
     }
-    if (source.length == LockAbstractPacket.RESPONSE_VALID_SIZE) {
-      return new LockAbstractPacket(source);
+    if (source.length == LockPacket.RESPONSE_VALID_SIZE) {
+      return new LockPacket(source);
+    }
+    if (source.length == ConfigPacket.CONFIG_VALID_SIZE) {
+      return new ConfigPacket(source);
     }
     throw new UnresolvedPacketException(source);
   }

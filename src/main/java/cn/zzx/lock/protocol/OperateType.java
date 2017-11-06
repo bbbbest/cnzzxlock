@@ -9,7 +9,7 @@ public enum OperateType {
    * LOCK     用符号 ']'代表关锁
    * UNLOCK   用符号 '['代表开锁
    */
-  LOCK((byte) 0x5D), UNLOCK((byte) 0x5B);
+  LOCK((byte) 0x5D), UNLOCK((byte) 0x5B), CONFIG((byte) 0xFF);
   private byte value;
 
   OperateType(byte value) {

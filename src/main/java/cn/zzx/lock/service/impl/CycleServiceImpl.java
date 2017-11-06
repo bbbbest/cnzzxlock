@@ -4,11 +4,7 @@ import cn.zzx.lock.db.dao.BicycleDao;
 import cn.zzx.lock.db.dao.CyclingRecordDao;
 import cn.zzx.lock.db.dao.DealRecordDao;
 import cn.zzx.lock.db.dao.UserDao;
-import cn.zzx.lock.db.po.Bicycle;
-import cn.zzx.lock.db.po.CyclingRecord;
-import cn.zzx.lock.db.po.DealRecord;
-import cn.zzx.lock.db.po.User;
-import cn.zzx.lock.protocol.ConstValue;
+import cn.zzx.lock.db.po.*;
 import cn.zzx.lock.service.CycleService;
 import org.junit.Assert;
 import org.springframework.stereotype.Service;
@@ -144,7 +140,7 @@ public class CycleServiceImpl implements CycleService {
 
     public float calc(Date last, Date now) {
       Assert.assertTrue(now.after(last));
-      float tariff = ConstValue.getTariff();
+      float tariff = Config.getInstance().getTariff();
       long start = last.getTime();
       long end = now.getTime();
       return tariff * unit((int) ((end - start) / 1000));
@@ -152,7 +148,7 @@ public class CycleServiceImpl implements CycleService {
 
     private int unit(int mills) {
       // 计费单元，向上取整
-      int calcUnit = ConstValue.getCalcUnit();
+      int calcUnit = Config.getInstance().getCalcUnit();
       int s = mills / (calcUnit * 60);
       int y = mills % calcUnit;
       return y > 0 ? s + 1 : s;

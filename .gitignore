@@ -3,6 +3,6 @@
 *.iml
 out
 # log
-log*
+#log*
 # classes
 target
